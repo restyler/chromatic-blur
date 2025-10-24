@@ -192,16 +192,16 @@ For best results, ensure background content has sufficient contrast.
 
 ## Modern Best Practices Implemented
 
-✅ **ES6+ Class-based architecture** - Clean, maintainable OOP design
-✅ **No dependencies** - Pure vanilla JavaScript
-✅ **Declarative API** - Intuitive method names and options
-✅ **Method chaining** - Fluent interface pattern
-✅ **Automatic cleanup** - Prevents memory leaks
-✅ **TypeScript-friendly** - Comprehensive JSDoc comments
-✅ **Multiple module formats** - Works everywhere
-✅ **Performance optimized** - Reuses SVG filters, minimal DOM manipulation
-✅ **Accessible** - Doesn't interfere with assistive technologies
-✅ **Defensive programming** - Proper error handling and validation
+- ✅ **ES6+ Class-based architecture** - Clean, maintainable OOP design
+- ✅ **No dependencies** - Pure vanilla JavaScript
+- ✅ **Declarative API** - Intuitive method names and options
+- ✅ **Method chaining** - Fluent interface pattern
+- ✅ **Automatic cleanup** - Prevents memory leaks
+- ✅ **TypeScript-friendly** - Comprehensive JSDoc comments
+- ✅ **Multiple module formats** - Works everywhere
+- ✅ **Performance optimized** - Reuses SVG filters, minimal DOM manipulation
+- ✅ **Accessible** - Doesn't interfere with assistive technologies
+- ✅ **Defensive programming** - Proper error handling and validation
 
 ## Performance Tips
 
