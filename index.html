@@ -115,6 +115,7 @@
             }
             .logo { font-size: 20px; }
             .nav-buttons { gap: 8px; flex-wrap: wrap; }
+            .nav-toggle { display: inline-flex; align-items: center; justify-content: center; }
             .btn { padding: 8px 12px; font-size: 14px; }
 
             .content { margin: 88px auto 0; padding: 18px; }
@@ -129,10 +130,13 @@
         }
 
         @media (max-width: 420px) {
-            .navbar { padding: 9px 12px; gap: 10px; }
+            .navbar { padding: 9px 12px; gap: 10px; overflow: visible !important; }
             .logo { font-size: 18px; }
             .btn { padding: 8px 10px; font-size: 13px; }
             .content { margin-top: 76px; }
+            .nav-buttons { display: none; flex-basis: 100%; margin-top: 8px; }
+            .navbar.nav-open .nav-buttons { display: flex; }
+            .section h2 { font-size: 28px; }
         }
 
         .logo {
@@ -152,6 +156,17 @@
             align-items: center;
             position: relative;
             z-index: 2;
+        }
+        .nav-toggle {
+            display: none;
+            background: #1f1f1f;
+            color: white;
+            border: none;
+            border-radius: 999px;
+            padding: 8px 12px;
+            font-size: 14px;
+            line-height: 1;
+            cursor: pointer;
         }
 
         .btn {
@@ -347,6 +362,7 @@
     <!-- Navigation with ChromaticBlur -->
     <nav class="navbar">
         <a href="https://github.com/restyler/chromatic-blur" class="logo">ChromaticBlur</a>
+        <button class="nav-toggle" aria-label="Menu" aria-expanded="false">☰</button>
         <div class="nav-buttons">
             <a href="https://github.com/restyler/chromatic-blur#readme" class="btn btn-primary">Documentation</a>
             <a href="https://github.com/restyler/chromatic-blur" class="btn btn-secondary">GitHub</a>
@@ -524,6 +540,25 @@ blur.destroy();</code></pre>
 
         // Initialize navbar effect
         const navBlur = new ChromaticBlur('.navbar');
+
+        // Mobile nav toggle
+        const navEl = document.querySelector('.navbar');
+        const navToggle = document.querySelector('.nav-toggle');
+        const navButtons = document.querySelector('.nav-buttons');
+        if (navToggle && navEl) {
+            navToggle.addEventListener('click', () => {
+                const open = navEl.classList.toggle('nav-open');
+                navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+            });
+        }
+        if (navButtons && navEl) {
+            navButtons.querySelectorAll('a').forEach((a) => {
+                a.addEventListener('click', () => {
+                    navEl.classList.remove('nav-open');
+                    if (navToggle) navToggle.setAttribute('aria-expanded', 'false');
+                });
+            });
+        }
 
         // Initialize demo cards with different settings
         const card1 = new ChromaticBlur('.card-1', {
