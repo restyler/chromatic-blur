@@ -1,6 +1,6 @@
 # ChromaticBlur.js
 
-A lightweight, zero-dependency JavaScript plugin for creating stunning chromatic aberration blur effects using SVG filters.
+A lightweight (2.1 KB gzipped), zero-dependency JavaScript plugin for creating stunning chromatic aberration blur effects using SVG filters.
 
 ![ChromaticBlur Demo](assets/blur1.gif)
 
@@ -8,33 +8,37 @@ A lightweight, zero-dependency JavaScript plugin for creating stunning chromatic
 
 - 🎨 Beautiful chromatic aberration with color channel splitting
 - 🪶 Zero dependencies - pure vanilla JavaScript
-- ⚡ Lightweight and performant
+- ⚡ Tiny footprint (2.1 KB gzipped) and performant
 - 🔧 Highly configurable
 - 🔗 Method chaining support
 - 🧹 Automatic cleanup and memory management
-- ♿ Accessible (screen reader friendly)
 - 📦 Multiple module formats (ES6, CommonJS, AMD, Global)
 
 ## Installation
 
-### Direct Download
-
-Download `chromatic-blur.js` and include it in your HTML:
+### Via CDN (Recommended)
 
 ```html
-<script src="chromatic-blur.js"></script>
+<!-- Minified version (6.4 KB, 2.1 KB gzipped) -->
+<script type="module">
+  import ChromaticBlur from 'https://unpkg.com/chromatic-blur@1.0.0/dist/chromatic-blur.min.js';
+  const blur = new ChromaticBlur('.element');
+</script>
+
+<!-- Development version with comments (10.5 KB) -->
+<script type="module">
+  import ChromaticBlur from 'https://unpkg.com/chromatic-blur@1.0.0/dist/chromatic-blur.js';
+</script>
 ```
 
-### ES Module
+### Via npm
 
-```javascript
-import ChromaticBlur from './chromatic-blur.js';
+```bash
+npm install chromatic-blur
 ```
 
-### CommonJS
-
 ```javascript
-const ChromaticBlur = require('./chromatic-blur.js');
+import ChromaticBlur from 'chromatic-blur';
 ```
 
 ## Quick Start
@@ -193,15 +197,13 @@ For best results, ensure background content has sufficient contrast.
 ## Modern Best Practices Implemented
 
 - ✅ **ES6+ Class-based architecture** - Clean, maintainable OOP design
-- ✅ **No dependencies** - Pure vanilla JavaScript
+- ✅ **No dependencies** - Pure vanilla JavaScript (2.1 KB gzipped)
 - ✅ **Declarative API** - Intuitive method names and options
 - ✅ **Method chaining** - Fluent interface pattern
 - ✅ **Automatic cleanup** - Prevents memory leaks
 - ✅ **TypeScript-friendly** - Comprehensive JSDoc comments
 - ✅ **Multiple module formats** - Works everywhere
 - ✅ **Performance optimized** - Reuses SVG filters, minimal DOM manipulation
-- ✅ **Accessible** - Doesn't interfere with assistive technologies
-- ✅ **Defensive programming** - Proper error handling and validation
 
 ## Performance Tips
 

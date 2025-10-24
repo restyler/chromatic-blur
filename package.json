@@ -13,11 +13,17 @@
   },
   "files": [
     "dist/chromatic-blur.js",
+    "dist/chromatic-blur.min.js",
     "README.md"
   ],
   "scripts": {
-    "build": "echo 'No build needed - pure vanilla JS'",
-    "prepublishOnly": "cp chromatic-blur.js dist/"
+    "build": "npm run build:copy && npm run build:minify",
+    "build:copy": "cp chromatic-blur.js dist/",
+    "build:minify": "terser chromatic-blur.js -c -m --module -o dist/chromatic-blur.min.js",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "terser": "^5.36.0"
   },
   "keywords": [
     "chromatic-aberration",
