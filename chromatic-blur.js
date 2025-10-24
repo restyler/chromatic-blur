@@ -260,14 +260,15 @@ class ChromaticBlur {
   _addFirefoxFallback() {
     const ua = navigator.userAgent || '';
     const isFirefox = /firefox/i.test(ua);
+    const isSafari = /^((?!chrome|android).)*safari/i.test(ua);
     const supports = (prop, value) => (typeof CSS !== 'undefined' && CSS.supports && CSS.supports(prop, value)) || false;
     const supportsUrl = supports('backdrop-filter', 'url(#x)') || supports('-webkit-backdrop-filter', 'url(#x)');
     const supportsBlur = supports('backdrop-filter', 'blur(1px)') || supports('-webkit-backdrop-filter', 'blur(1px)');
 
     let mode = 'url';
 
-    // For Firefox or when URL-based backdrop-filter isn't available, use a minimal blur fallback if possible
-    if (isFirefox || !supportsUrl) {
+    // For Firefox or Safari, or when URL-based backdrop-filter isn't available, use a minimal blur fallback if possible
+    if (isFirefox || isSafari || !supportsUrl) {
       if (supportsBlur) {
         const px = Math.max(6, this.options.blurAmount * 3);
         this.element.style.backgroundColor = 'rgba(255, 255, 255, 0.35)';
@@ -284,7 +285,7 @@ class ChromaticBlur {
       this.element.style.boxShadow = `0 0 0 1px ${this.options.borderColor} inset, 0 4px 12px rgba(0, 0, 0, 0.15)`;
     }
 
-    console.log('ChromaticBlur fallback', { isFirefox, supportsUrl, supportsBlur, mode });
+    console.log('ChromaticBlur fallback', { isFirefox, isSafari, supportsUrl, supportsBlur, mode });
   }
 
   /**
