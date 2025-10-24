@@ -262,22 +262,31 @@ class ChromaticBlur {
     const isSupported = testElement.style.backdropFilter !== '';
 
     if (!isSupported) {
-      // Create a pseudo-background element for Firefox
+      // Firefox fallback: use simpler glass effect without SVG filters
+      // SVG filters don't work reliably in Firefox for this use case
+      this.element.style.background = 'rgba(255, 255, 255, 0.75)';
+      this.element.style.boxShadow = `
+        0 0 0 1px ${this.options.borderColor} inset,
+        0 8px 32px rgba(0, 0, 0, 0.1)
+      `;
+
+      // Add a subtle blur effect using box-shadow
       const firefoxBg = document.createElement('div');
       firefoxBg.className = 'chromatic-blur-firefox-bg';
       firefoxBg.style.cssText = `
         position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: rgba(255, 255, 255, 0.7);
-        filter: url(#${this.id}) blur(20px);
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: inherit;
+        filter: blur(8px);
+        opacity: 0.5;
         pointer-events: none;
         z-index: -1;
+        transform: scale(1.1);
       `;
 
-      this.element.style.background = 'rgba(255, 255, 255, 0.5)';
       this.element.insertBefore(firefoxBg, this.element.firstChild);
       this.firefoxBg = firefoxBg;
     }
