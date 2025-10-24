@@ -2,6 +2,8 @@
 
 A lightweight (2.1 KB gzipped), zero-dependency JavaScript plugin for creating stunning chromatic aberration blur effects using SVG filters.
 
+🔗 **[Live Demo](https://restyler.github.io/chromatic-blur/)** | 📦 **[npm](https://www.npmjs.com/package/chromatic-blur)**
+
 ![ChromaticBlur Demo](assets/blur1.gif)
 
 ## Features
