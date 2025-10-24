@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChromaticBlur.js - Chromatic Aberration Effect Plugin</title>
+    <meta name="description" content="A lightweight, zero-dependency JavaScript plugin for creating stunning chromatic aberration blur effects">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #f5f5f5;
+            min-height: 300vh;
+            padding: 20px;
+        }
+
+        /* Subtle noise texture background */
+        .background-text {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            background-image:
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(128, 128, 128, 0.03) 2px,
+                    rgba(128, 128, 128, 0.03) 4px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(128, 128, 128, 0.03) 2px,
+                    rgba(128, 128, 128, 0.03) 4px
+                ),
+                repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 8px,
+                    rgba(128, 128, 128, 0.02) 8px,
+                    rgba(128, 128, 128, 0.02) 10px
+                );
+        }
+
+        .background-text::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+        }
+
+        /* Navigation bar */
+        .navbar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 12px 24px;
+            border-radius: 100px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1f1f1f;
+            text-decoration: none;
+            position: relative;
+            z-index: 2;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border-radius: 100px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-primary {
+            background-color: white;
+            color: #1f1f1f;
+            border: 1px solid rgb(219, 219, 219);
+            box-shadow: rgba(255, 255, 255, 0.05) 0px 30px 24px 0px inset;
+        }
+
+        .btn-secondary {
+            background-color: #1f1f1f;
+            color: white;
+            border: none;
+        }
+
+        /* Content sections */
+        .content {
+            max-width: 1200px;
+            margin: 120px auto 0;
+            padding: 40px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .section {
+            margin-bottom: 60px;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .section h2 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #1f1f1f;
+        }
+
+        .section p {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        /* Control panel */
+        .controls {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+
+        .controls h3 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .control-group input[type="range"] {
+            width: 100%;
+            margin-right: 10px;
+        }
+
+        .control-group .value-display {
+            display: inline-block;
+            min-width: 50px;
+            text-align: right;
+            font-family: monospace;
+            color: #666;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .control-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #1f1f1f;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .control-btn:hover {
+            background: #333;
+        }
+
+        .control-btn.secondary {
+            background: #e0e0e0;
+            color: #1f1f1f;
+        }
+
+        .control-btn.secondary:hover {
+            background: #d0d0d0;
+        }
+
+        /* Demo cards */
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .demo-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .demo-card h4 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .demo-card p {
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <!-- Subtle noise texture background -->
+    <div class="background-text"></div>
+
+    <!-- Navigation with ChromaticBlur -->
+    <nav class="navbar">
+        <a href="#" class="logo">ChromaticBlur</a>
+        <div class="nav-buttons">
+            <a href="#" class="btn btn-primary">Documentation</a>
+            <a href="#" class="btn btn-secondary">GitHub</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="content">
+        <div class="section">
+            <h2>ChromaticBlur.js Plugin Demo</h2>
+            <p>
+                This page demonstrates the ChromaticBlur.js plugin - a modern, vanilla JavaScript
+                solution for creating chromatic aberration effects. The navigation bar above uses
+                the plugin with default settings.
+            </p>
+            <p>
+                Try scrolling to see how the background text interacts with the blur effect!
+            </p>
+        </div>
+
+        <!-- Interactive Controls -->
+        <div class="controls">
+            <h3>Live Controls</h3>
+            <p style="margin-bottom: 20px; color: #666;">
+                Adjust the settings below to see real-time changes to the navigation bar effect.
+            </p>
+
+            <div class="control-group">
+                <label>
+                    Red Offset: <span class="value-display" id="redValue">5</span>px
+                </label>
+                <input type="range" id="redOffset" min="-20" max="20" value="5" step="1">
+            </div>
+
+            <div class="control-group">
+                <label>
+                    Blue Offset: <span class="value-display" id="blueValue">-5</span>px
+                </label>
+                <input type="range" id="blueOffset" min="-20" max="20" value="-5" step="1">
+            </div>
+
+            <div class="control-group">
+                <label>
+                    Blur Amount: <span class="value-display" id="blurValue">3</span>
+                </label>
+                <input type="range" id="blurAmount" min="0" max="10" value="3" step="0.5">
+            </div>
+
+            <div class="control-group">
+                <label>
+                    Displacement Scale: <span class="value-display" id="displacementValue">50</span>
+                </label>
+                <input type="range" id="displacementScale" min="0" max="150" value="50" step="5">
+            </div>
+
+            <div class="control-buttons">
+                <button class="control-btn" id="resetBtn">Reset to Defaults</button>
+                <button class="control-btn secondary" id="toggleBtn">Disable Effect</button>
+                <button class="control-btn secondary" id="intenseBtn">Intense Mode</button>
+            </div>
+        </div>
+
+        <!-- Multiple Demo Cards -->
+        <div class="section">
+            <h2>Multiple Instances</h2>
+            <p>
+                The plugin can be applied to multiple elements simultaneously, each with different settings.
+            </p>
+
+            <div class="demo-grid">
+                <div class="demo-card card-1">
+                    <h4>Subtle Effect</h4>
+                    <p>Low offset, minimal blur</p>
+                </div>
+
+                <div class="demo-card card-2">
+                    <h4>Medium Effect</h4>
+                    <p>Balanced settings</p>
+                </div>
+
+                <div class="demo-card card-3">
+                    <h4>Intense Effect</h4>
+                    <p>High offset, maximum blur</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Usage Example -->
+        <div class="section">
+            <h2>Usage Example</h2>
+            <pre style="background: #0d1117; padding: 20px; border-radius: 10px; overflow-x: auto;"><code class="language-javascript">// Initialize with default settings
+const blur = new ChromaticBlur('.navbar');
+
+// Or with custom options
+const blur = new ChromaticBlur('.navbar', {
+  redOffset: 8,
+  blueOffset: -8,
+  blurAmount: 5,
+  displacementScale: 75
+});
+
+// Update dynamically
+blur.update({ redOffset: 10 });
+
+// Method chaining
+blur.disable().update({ blurAmount: 2 }).enable();
+
+// Cleanup
+blur.destroy();</code></pre>
+        </div>
+
+        <!-- Features -->
+        <div class="section">
+            <h2>Key Features</h2>
+            <p>🎨 Beautiful chromatic aberration with color channel splitting</p>
+            <p>🪶 Zero dependencies - pure vanilla JavaScript</p>
+            <p>⚡ Lightweight and performant</p>
+            <p>🔧 Highly configurable with sensible defaults</p>
+            <p>🔗 Method chaining support</p>
+            <p>🧹 Automatic cleanup and memory management</p>
+            <p>♿ Accessible (screen reader friendly)</p>
+            <p>📦 Multiple module formats (ES6, CommonJS, AMD, Global)</p>
+        </div>
+
+        <div class="section">
+            <h2>Modern Best Practices</h2>
+            <p>
+                This plugin demonstrates modern JavaScript development practices:
+            </p>
+            <p>✅ ES6+ class-based architecture for clean OOP design</p>
+            <p>✅ No external dependencies - pure vanilla JS</p>
+            <p>✅ Declarative API with intuitive method names</p>
+            <p>✅ Fluent interface with method chaining</p>
+            <p>✅ Proper memory management and cleanup</p>
+            <p>✅ TypeScript-friendly with comprehensive JSDoc comments</p>
+            <p>✅ Performance optimized - reuses SVG filters, minimal DOM manipulation</p>
+            <p>✅ Defensive programming with error handling and validation</p>
+        </div>
+    </div>
+
+    <!-- Highlight.js for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <!-- Import the plugin -->
+    <script type="module">
+        import ChromaticBlur from './dist/chromatic-blur.js';
+
+        // Initialize navbar effect
+        const navBlur = new ChromaticBlur('.navbar');
+
+        // Initialize demo cards with different settings
+        const card1 = new ChromaticBlur('.card-1', {
+            redOffset: 2,
+            blueOffset: -2,
+            blurAmount: 2
+        });
+
+        const card2 = new ChromaticBlur('.card-2', {
+            redOffset: 5,
+            blueOffset: -5,
+            blurAmount: 4
+        });
+
+        const card3 = new ChromaticBlur('.card-3', {
+            redOffset: 12,
+            blueOffset: -12,
+            blurAmount: 8,
+            displacementScale: 100
+        });
+
+        // Interactive controls
+        let isEnabled = true;
+
+        // Update red offset
+        document.getElementById('redOffset').addEventListener('input', (e) => {
+            const value = parseFloat(e.target.value);
+            document.getElementById('redValue').textContent = value;
+            navBlur.update({ redOffset: value });
+        });
+
+        // Update blue offset
+        document.getElementById('blueOffset').addEventListener('input', (e) => {
+            const value = parseFloat(e.target.value);
+            document.getElementById('blueValue').textContent = value;
+            navBlur.update({ blueOffset: value });
+        });
+
+        // Update blur amount
+        document.getElementById('blurAmount').addEventListener('input', (e) => {
+            const value = parseFloat(e.target.value);
+            document.getElementById('blurValue').textContent = value;
+            navBlur.update({ blurAmount: value });
+        });
+
+        // Update displacement scale
+        document.getElementById('displacementScale').addEventListener('input', (e) => {
+            const value = parseFloat(e.target.value);
+            document.getElementById('displacementValue').textContent = value;
+            navBlur.update({ displacementScale: value });
+        });
+
+        // Reset button
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            document.getElementById('redOffset').value = 5;
+            document.getElementById('blueOffset').value = -5;
+            document.getElementById('blurAmount').value = 3;
+            document.getElementById('displacementScale').value = 50;
+
+            document.getElementById('redValue').textContent = 5;
+            document.getElementById('blueValue').textContent = -5;
+            document.getElementById('blurValue').textContent = 3;
+            document.getElementById('displacementValue').textContent = 50;
+
+            navBlur.update({
+                redOffset: 5,
+                blueOffset: -5,
+                blurAmount: 3,
+                displacementScale: 50
+            });
+
+            if (!isEnabled) {
+                navBlur.enable();
+                isEnabled = true;
+                document.getElementById('toggleBtn').textContent = 'Disable Effect';
+            }
+        });
+
+        // Toggle button
+        document.getElementById('toggleBtn').addEventListener('click', (e) => {
+            if (isEnabled) {
+                navBlur.disable();
+                e.target.textContent = 'Enable Effect';
+            } else {
+                navBlur.enable();
+                e.target.textContent = 'Disable Effect';
+            }
+            isEnabled = !isEnabled;
+        });
+
+        // Intense mode button
+        document.getElementById('intenseBtn').addEventListener('click', () => {
+            document.getElementById('redOffset').value = 15;
+            document.getElementById('blueOffset').value = -15;
+            document.getElementById('blurAmount').value = 8;
+            document.getElementById('displacementScale').value = 100;
+
+            document.getElementById('redValue').textContent = 15;
+            document.getElementById('blueValue').textContent = -15;
+            document.getElementById('blurValue').textContent = 8;
+            document.getElementById('displacementValue').textContent = 100;
+
+            navBlur.update({
+                redOffset: 15,
+                blueOffset: -15,
+                blurAmount: 8,
+                displacementScale: 100
+            });
+
+            if (!isEnabled) {
+                navBlur.enable();
+                isEnabled = true;
+                document.getElementById('toggleBtn').textContent = 'Disable Effect';
+            }
+        });
+
+        // Expose to window for debugging
+        window.navBlur = navBlur;
+        window.ChromaticBlur = ChromaticBlur;
+    </script>
+</body>
+</html>

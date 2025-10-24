@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chromatic Aberration Blur Effect - Navigation Bar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #f5f5f5;
+            min-height: 300vh;
+            padding: 20px;
+        }
+
+        /* Content sections */
+        .content {
+            max-width: 1200px;
+            margin: 120px auto 0;
+            padding: 40px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .section {
+            margin-bottom: 60px;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .section h2 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #1f1f1f;
+        }
+
+        .section p {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #666;
+        }
+
+        /* Large background text for the blur effect to interact with */
+        .background-text {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 40px;
+            font-size: 120px;
+            font-weight: 900;
+            line-height: 1.2;
+            color: #1f1f1f;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Navigation container */
+        .nav-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+        }
+
+        /* Glass navigation bar */
+        .glass-nav {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 12px 24px;
+            border-radius: 100px;
+            box-shadow: 0 0 0 1px rgba(156, 156, 156, 0.2) inset;
+            backdrop-filter: url(#glass-filter);
+            -webkit-backdrop-filter: url(#glass-filter);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Logo */
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1f1f1f;
+            text-decoration: none;
+            z-index: 2;
+        }
+
+        /* Navigation buttons */
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            z-index: 2;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border-radius: 100px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-primary {
+            background-color: white;
+            color: #1f1f1f;
+            border: 1px solid rgb(219, 219, 219);
+            backdrop-filter: blur(76px);
+            box-shadow: rgba(255, 255, 255, 0.05) 0px 30px 24px 0px inset;
+        }
+
+        .btn-secondary {
+            background-color: #1f1f1f;
+            color: white;
+        }
+
+        /* Overlay layers for additional glass effect */
+        .overlay-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            border-radius: 100px;
+        }
+
+        .overlay-noise {
+            mix-blend-mode: overlay;
+            background-color: rgba(255, 255, 255, 0);
+            opacity: 0.05;
+        }
+
+        .overlay-gradient {
+            background-image: linear-gradient(225deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            mix-blend-mode: screen;
+        }
+
+        /* SVG filter is hidden */
+        .filter-svg {
+            position: absolute;
+            width: 0;
+            height: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background text to create the blur effect -->
+    <div class="background-text">
+        rumor rumor rumor<br>
+        what's the conversation<br>
+        culture's biggest stories<br>
+        platform discovery<br>
+        modern storytelling
+        rumor rumor rumor<br>
+        what's the conversation<br>
+        culture's biggest stories<br>
+        platform discovery<br>
+        modern storytelling
+        rumor rumor rumor<br>
+        what's the conversation<br>
+        culture's biggest stories<br>
+        platform discovery<br>
+        modern storytelling
+    </div>
+
+    <!-- SVG Filter Definition -->
+    <svg class="filter-svg">
+        <defs>
+            <filter id="glass-filter" x="-50%" y="-50%" width="200%" height="200%">
+                <!-- Add turbulence for organic noise -->
+                <feTurbulence
+                    baseFrequency="0.001"
+                    numOctaves="1"
+                    type="turbulence"
+                    result="turbulence">
+                </feTurbulence>
+
+                <!-- RED CHANNEL: Offset to the right -->
+                <feOffset
+                    in="SourceGraphic"
+                    dx="5"
+                    dy="0"
+                    result="redOffset">
+                </feOffset>
+                <feColorMatrix
+                    in="redOffset"
+                    type="matrix"
+                    values="1 0 0 0 0
+                            0 0 0 0 0
+                            0 0 0 0 0
+                            0 0 0 1 0"
+                    result="red">
+                </feColorMatrix>
+
+                <!-- GREEN CHANNEL: No offset -->
+                <feColorMatrix
+                    in="SourceGraphic"
+                    type="matrix"
+                    values="0 0 0 0 0
+                            0 1 0 0 0
+                            0 0 0 0 0
+                            0 0 0 1 0"
+                    result="green">
+                </feColorMatrix>
+
+                <!-- BLUE CHANNEL: Offset to the left -->
+                <feOffset
+                    in="SourceGraphic"
+                    dx="-5"
+                    dy="0"
+                    result="blueOffset">
+                </feOffset>
+                <feColorMatrix
+                    in="blueOffset"
+                    type="matrix"
+                    values="0 0 0 0 0
+                            0 0 0 0 0
+                            0 0 1 0 0
+                            0 0 0 1 0"
+                    result="blue">
+                </feColorMatrix>
+
+                <!-- Combine red and green -->
+                <feComposite
+                    in="red"
+                    in2="green"
+                    operator="arithmetic"
+                    k2="1"
+                    k3="1"
+                    result="redGreen">
+                </feComposite>
+
+                <!-- Combine with blue to get full color split -->
+                <feComposite
+                    in="redGreen"
+                    in2="blue"
+                    operator="arithmetic"
+                    k2="1"
+                    k3="1"
+                    result="colorSplit">
+                </feComposite>
+
+                <!-- Apply displacement map for wavy distortion -->
+                <feDisplacementMap
+                    in="colorSplit"
+                    in2="turbulence"
+                    scale="50"
+                    result="displacement">
+                </feDisplacementMap>
+
+                <!-- Final blur -->
+                <feGaussianBlur
+                    in="displacement"
+                    stdDeviation="3"
+                    result="blurred">
+                </feGaussianBlur>
+            </filter>
+        </defs>
+    </svg>
+
+    <!-- Navigation -->
+    <nav class="nav-container">
+        <div class="glass-nav">
+            <!-- Overlay layers for additional depth -->
+            <div class="overlay-layer overlay-noise"></div>
+            <div class="overlay-layer overlay-gradient"></div>
+
+            <!-- Logo -->
+            <a href="#" class="logo">rumor</a>
+
+            <!-- Buttons -->
+            <div class="nav-buttons">
+                <a href="#" class="btn btn-primary">Become a host</a>
+                <a href="#" class="btn btn-secondary">Log in</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="content">
+        <div class="section">
+            <h2>Chromatic Aberration Effect</h2>
+            <p>
+                This navigation bar uses SVG filters to create a stunning chromatic aberration effect.
+                The background text is split into RGB channels and offset in different directions,
+                creating the rainbow-like reflections you see through the glass navigation bar.
+            </p>
+        </div>
+
+        <div class="section">
+            <h2>How It Works</h2>
+            <p>
+                The effect combines multiple techniques: color channel splitting (red offset right,
+                blue offset left), turbulence for organic distortion, displacement mapping for wavy
+                effects, and Gaussian blur for that soft lens blur look. Scroll up and down to see
+                how the text behind interacts with the glass effect.
+            </p>
+        </div>
+
+        <div class="section">
+            <h2>Multiple Reflections</h2>
+            <p>
+                The layered approach creates multiple "reflections" of the background text, with
+                each color channel creating its own ghosted copy. This mimics the way light refracts
+                through glass or camera lenses with chromatic aberration.
+            </p>
+        </div>
+
+        <div class="section">
+            <h2>Keep Scrolling</h2>
+            <p>
+                Notice how the navigation bar stays fixed at the top while the background text
+                scrolls behind it, creating a dynamic interaction between the content and the
+                blur effect. The color aberration becomes especially visible where text passes
+                behind the navigation.
+            </p>
+        </div>
+    </div>
+
+</body>
+</html>

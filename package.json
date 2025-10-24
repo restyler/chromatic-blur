@@ -1,0 +1,47 @@
+{
+  "name": "chromatic-blur",
+  "version": "1.0.0",
+  "description": "A lightweight, zero-dependency JavaScript plugin for creating stunning chromatic aberration blur effects",
+  "main": "dist/chromatic-blur.js",
+  "module": "dist/chromatic-blur.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/chromatic-blur.js",
+      "require": "./dist/chromatic-blur.js"
+    }
+  },
+  "files": [
+    "dist/chromatic-blur.js",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "echo 'No build needed - pure vanilla JS'",
+    "prepublishOnly": "cp chromatic-blur.js dist/"
+  },
+  "keywords": [
+    "chromatic-aberration",
+    "blur",
+    "glass-morphism",
+    "backdrop-filter",
+    "svg-filter",
+    "vanilla-js",
+    "no-dependencies",
+    "ui-effects",
+    "css-effects",
+    "visual-effects"
+  ],
+  "author": "restyler",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/restyler/chromatic-blur.git"
+  },
+  "bugs": {
+    "url": "https://github.com/restyler/chromatic-blur/issues"
+  },
+  "homepage": "https://restyler.github.io/chromatic-blur/",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
