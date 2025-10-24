@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -77,14 +77,14 @@
         }
 
         .logo {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 24px;
-            font-weight: 900;
+            font-family: 'Libre Baskerville', Georgia, serif;
+            font-size: 26px;
+            font-weight: 700;
             color: #1f1f1f;
             text-decoration: none;
             position: relative;
             z-index: 2;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.01em;
         }
 
         .nav-buttons {
@@ -144,22 +144,23 @@
         }
 
         .section h2 {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 56px;
-            font-weight: 900;
-            margin-bottom: 24px;
+            font-family: 'Libre Baskerville', Georgia, serif;
+            font-size: 72px;
+            font-weight: 700;
+            margin-bottom: 28px;
             color: #1a1a1a;
-            letter-spacing: -0.03em;
-            line-height: 1.1;
+            letter-spacing: -0.02em;
+            line-height: 1.05;
         }
 
         .section h3 {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 28px;
+            font-family: 'Libre Baskerville', Georgia, serif;
+            font-size: 36px;
             font-weight: 700;
-            margin-bottom: 16px;
+            margin-bottom: 18px;
             color: #1a1a1a;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.015em;
+            line-height: 1.2;
         }
 
         .section p {
@@ -181,12 +182,13 @@
         }
 
         .controls h3 {
-            font-family: 'Playfair Display', Georgia, serif;
+            font-family: 'Libre Baskerville', Georgia, serif;
             margin-bottom: 24px;
-            font-size: 32px;
+            font-size: 42px;
             font-weight: 700;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.015em;
             color: #1a1a1a;
+            line-height: 1.2;
         }
 
         .control-group {
@@ -263,12 +265,13 @@
         }
 
         .demo-card h4 {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 24px;
+            font-family: 'Libre Baskerville', Georgia, serif;
+            font-size: 28px;
             font-weight: 700;
-            margin-bottom: 10px;
-            letter-spacing: -0.02em;
+            margin-bottom: 12px;
+            letter-spacing: -0.015em;
             color: #1a1a1a;
+            line-height: 1.2;
         }
 
         .demo-card p {
@@ -306,7 +309,7 @@
 
             <!-- Quick Links -->
             <div style="margin-top: 30px; padding: 30px; background: #f8f8f8; border-radius: 2px; border-left: 3px solid #1a1a1a;">
-                <h3 style="font-family: 'Playfair Display', Georgia, serif; margin-bottom: 18px; font-size: 24px; font-weight: 700; letter-spacing: -0.02em; color: #1a1a1a;">Quick Links</h3>
+                <h3 style="font-family: 'Libre Baskerville', Georgia, serif; margin-bottom: 20px; font-size: 32px; font-weight: 700; letter-spacing: -0.015em; color: #1a1a1a; line-height: 1.2;">Quick Links</h3>
                 <div style="display: flex; gap: 12px; flex-wrap: wrap;">
                     <a href="https://unpkg.com/chromatic-blur@latest/dist/chromatic-blur.min.js"
                        target="_blank"
@@ -458,7 +461,7 @@ blur.destroy();</code></pre>
 
     <!-- Import the plugin -->
     <script type="module">
-        import ChromaticBlur from './dist/chromatic-blur.js?v=1.0.2';
+        import ChromaticBlur from './dist/chromatic-blur.js?v=1.0.3';
 
         // Initialize navbar effect
         const navBlur = new ChromaticBlur('.navbar');
