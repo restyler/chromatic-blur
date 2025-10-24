@@ -246,6 +246,41 @@ class ChromaticBlur {
     if (needsPosition) {
       this.element.style.position = 'relative';
     }
+
+    // Firefox fallback: detect if backdrop-filter is not supported
+    this._addFirefoxFallback();
+  }
+
+  /**
+   * Add Firefox fallback using regular filter on background layer
+   * @private
+   */
+  _addFirefoxFallback() {
+    // Test if backdrop-filter is supported
+    const testElement = document.createElement('div');
+    testElement.style.backdropFilter = 'blur(1px)';
+    const isSupported = testElement.style.backdropFilter !== '';
+
+    if (!isSupported) {
+      // Create a pseudo-background element for Firefox
+      const firefoxBg = document.createElement('div');
+      firefoxBg.className = 'chromatic-blur-firefox-bg';
+      firefoxBg.style.cssText = `
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: rgba(255, 255, 255, 0.7);
+        filter: url(#${this.id}) blur(20px);
+        pointer-events: none;
+        z-index: -1;
+      `;
+
+      this.element.style.background = 'rgba(255, 255, 255, 0.5)';
+      this.element.insertBefore(firefoxBg, this.element.firstChild);
+      this.firefoxBg = firefoxBg;
+    }
   }
 
   /**
@@ -337,6 +372,11 @@ class ChromaticBlur {
     // Remove overlays
     if (this.overlayContainer) {
       this.overlayContainer.remove();
+    }
+
+    // Remove Firefox fallback
+    if (this.firefoxBg) {
+      this.firefoxBg.remove();
     }
 
     // Restore original styles
