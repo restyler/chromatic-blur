@@ -262,32 +262,46 @@ class ChromaticBlur {
     const isSupported = testElement.style.backdropFilter !== '';
 
     if (!isSupported) {
-      // Firefox fallback: use simpler glass effect without SVG filters
-      // SVG filters don't work reliably in Firefox for this use case
-      this.element.style.background = 'rgba(255, 255, 255, 0.75)';
+      // Firefox fallback: create a visible frosted glass effect
+      console.log('ChromaticBlur: Using Firefox fallback');
+
+      // Set semi-transparent white background
+      this.element.style.backgroundColor = 'rgba(255, 255, 255, 0.85)';
       this.element.style.boxShadow = `
         0 0 0 1px ${this.options.borderColor} inset,
-        0 8px 32px rgba(0, 0, 0, 0.1)
+        0 4px 12px rgba(0, 0, 0, 0.15)
       `;
 
-      // Add a subtle blur effect using box-shadow
+      // Create blurred background layer
       const firefoxBg = document.createElement('div');
       firefoxBg.className = 'chromatic-blur-firefox-bg';
       firefoxBg.style.cssText = `
         position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: inherit;
-        filter: blur(8px);
-        opacity: 0.5;
+        top: -10px;
+        left: -10px;
+        right: -10px;
+        bottom: -10px;
+        background: rgba(255, 255, 255, 0.3);
+        filter: blur(10px);
         pointer-events: none;
-        z-index: -1;
-        transform: scale(1.1);
+        z-index: 0;
+        border-radius: inherit;
       `;
 
+      // Ensure content stays above background
+      const children = Array.from(this.element.children);
       this.element.insertBefore(firefoxBg, this.element.firstChild);
+
+      // Make sure all other children have position relative
+      children.forEach(child => {
+        if (window.getComputedStyle(child).position === 'static') {
+          child.style.position = 'relative';
+        }
+        if (!child.style.zIndex || child.style.zIndex === 'auto') {
+          child.style.zIndex = '1';
+        }
+      });
+
       this.firefoxBg = firefoxBg;
     }
   }
