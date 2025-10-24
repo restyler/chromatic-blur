@@ -256,14 +256,16 @@ class ChromaticBlur {
    * @private
    */
   _addFirefoxFallback() {
-    // Test if backdrop-filter is supported
+    // Test if backdrop-filter with SVG filters is supported
+    // Firefox supports backdrop-filter: blur() but NOT backdrop-filter: url(#id)
+    const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
     const testElement = document.createElement('div');
     testElement.style.backdropFilter = 'blur(1px)';
-    const isSupported = testElement.style.backdropFilter !== '';
+    const backdropFilterSupported = testElement.style.backdropFilter !== '';
 
-    if (!isSupported) {
-      // Firefox fallback: create a visible frosted glass effect
-      console.log('ChromaticBlur: Using Firefox fallback');
+    // If Firefox, always use fallback (it doesn't support SVG filters in backdrop-filter)
+    if (isFirefox || !backdropFilterSupported) {
+      console.log('ChromaticBlur: Using fallback mode', { isFirefox, backdropFilterSupported });
 
       // Set semi-transparent white background
       this.element.style.backgroundColor = 'rgba(255, 255, 255, 0.85)';
