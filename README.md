@@ -2,6 +2,8 @@
 
 A lightweight, zero-dependency JavaScript plugin for creating stunning chromatic aberration blur effects using SVG filters.
 
+![ChromaticBlur Demo](assets/blur1.gif)
+
 ## Features
 
 - 🎨 Beautiful chromatic aberration with color channel splitting
