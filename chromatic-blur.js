@@ -74,6 +74,8 @@ class ChromaticBlur {
     this.originalStyles = {
       backdropFilter: this.element.style.backdropFilter,
       WebkitBackdropFilter: this.element.style.WebkitBackdropFilter,
+      backgroundColor: this.element.style.backgroundColor,
+      boxShadow: this.element.style.boxShadow,
       position: this.element.style.position,
       overflow: this.element.style.overflow
     };
@@ -256,56 +258,33 @@ class ChromaticBlur {
    * @private
    */
   _addFirefoxFallback() {
-    // Test if backdrop-filter with SVG filters is supported
-    // Firefox supports backdrop-filter: blur() but NOT backdrop-filter: url(#id)
-    const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
-    const testElement = document.createElement('div');
-    testElement.style.backdropFilter = 'blur(1px)';
-    const backdropFilterSupported = testElement.style.backdropFilter !== '';
+    const ua = navigator.userAgent || '';
+    const isFirefox = /firefox/i.test(ua);
+    const supports = (prop, value) => (typeof CSS !== 'undefined' && CSS.supports && CSS.supports(prop, value)) || false;
+    const supportsUrl = supports('backdrop-filter', 'url(#x)') || supports('-webkit-backdrop-filter', 'url(#x)');
+    const supportsBlur = supports('backdrop-filter', 'blur(1px)') || supports('-webkit-backdrop-filter', 'blur(1px)');
 
-    // If Firefox, always use fallback (it doesn't support SVG filters in backdrop-filter)
-    if (isFirefox || !backdropFilterSupported) {
-      console.log('ChromaticBlur: Using fallback mode', { isFirefox, backdropFilterSupported });
+    let mode = 'url';
 
-      // Set semi-transparent white background
-      this.element.style.backgroundColor = 'rgba(255, 255, 255, 0.85)';
-      this.element.style.boxShadow = `
-        0 0 0 1px ${this.options.borderColor} inset,
-        0 4px 12px rgba(0, 0, 0, 0.15)
-      `;
-
-      // Create blurred background layer
-      const firefoxBg = document.createElement('div');
-      firefoxBg.className = 'chromatic-blur-firefox-bg';
-      firefoxBg.style.cssText = `
-        position: absolute;
-        top: -10px;
-        left: -10px;
-        right: -10px;
-        bottom: -10px;
-        background: rgba(255, 255, 255, 0.3);
-        filter: blur(10px);
-        pointer-events: none;
-        z-index: 0;
-        border-radius: inherit;
-      `;
-
-      // Ensure content stays above background
-      const children = Array.from(this.element.children);
-      this.element.insertBefore(firefoxBg, this.element.firstChild);
-
-      // Make sure all other children have position relative
-      children.forEach(child => {
-        if (window.getComputedStyle(child).position === 'static') {
-          child.style.position = 'relative';
-        }
-        if (!child.style.zIndex || child.style.zIndex === 'auto') {
-          child.style.zIndex = '1';
-        }
-      });
-
-      this.firefoxBg = firefoxBg;
+    // For Firefox or when URL-based backdrop-filter isn't available, use a minimal blur fallback if possible
+    if (isFirefox || !supportsUrl) {
+      if (supportsBlur) {
+        const px = Math.max(6, this.options.blurAmount * 3);
+        this.element.style.backgroundColor = 'rgba(255, 255, 255, 0.35)';
+        this.element.style.backdropFilter = `blur(${px}px)`;
+        this.element.style.WebkitBackdropFilter = `blur(${px}px)`;
+        mode = 'blur';
+      } else {
+        // No backdrop-filter support at all: simple legible background
+        this.element.style.backgroundColor = 'rgba(255, 255, 255, 0.85)';
+        this.element.style.backdropFilter = 'none';
+        this.element.style.WebkitBackdropFilter = 'none';
+        mode = 'none';
+      }
+      this.element.style.boxShadow = `0 0 0 1px ${this.options.borderColor} inset, 0 4px 12px rgba(0, 0, 0, 0.15)`;
     }
+
+    console.log('ChromaticBlur fallback', { isFirefox, supportsUrl, supportsBlur, mode });
   }
 
   /**
@@ -424,8 +403,8 @@ class ChromaticBlur {
    * @returns {ChromaticBlur} Returns this for chaining
    */
   enable() {
-    this.element.style.backdropFilter = `url(#${this.id})`;
-    this.element.style.WebkitBackdropFilter = `url(#${this.id})`;
+    // Re-apply styles so that capability checks and fallbacks are respected
+    this._applyStyles();
     return this;
   }
 

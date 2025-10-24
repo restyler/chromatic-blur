@@ -193,10 +193,10 @@ ChromaticBlur.destroyAll();
 Works in all modern browsers:
 - ✅ **Chrome/Edge**: Full support with `backdrop-filter`
 - ✅ **Safari**: Full support with `-webkit-backdrop-filter`
-- ✅ **Firefox**: Automatic fallback using semi-transparent background (simplified effect)
+- ✅ **Firefox**: Simpler fallback effect — uses `backdrop-filter: blur(...)` when available; otherwise falls back to a semi‑transparent glass background.
 - ✅ **Mobile browsers**: Works on iOS Safari and Chrome Android
 
-**Note**: Firefox doesn't support `backdrop-filter` by default, so the plugin automatically provides a graceful fallback with a glass-like background effect. The chromatic aberration is still visible but without the background blur.
+Note: Firefox does not support URL-backed `backdrop-filter` for SVG filters. When that isn’t available, the library applies a simpler, legible effect: either a native `blur(...)` backdrop or a semi‑transparent glass background on older setups.
 
 For best results, ensure background content has sufficient contrast.
 

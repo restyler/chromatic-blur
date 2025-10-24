@@ -1,0 +1,23 @@
+
+╭─── Claude Code v2.0.25 ────────────────────────────────────────────────────────────────────────────╮
+│                                       │ Tips for getting started                                   │
+│          Welcome back Anton!          │ Run /init to create a CLAUDE.md file with instructions fo… │
+│                                       │ ────────────────────────────────────────────────────────── │
+│                ▐▛███▜▌                │ Recent activity                                            │
+│               ▝▜█████▛▘               │ No recent activity                                         │
+│                 ▘▘ ▝▝                 │                                                            │
+│                                       │                                                            │
+│        Sonnet 4.5 · Claude Pro        │                                                            │
+│   /Users/anton/dev/lens-blur-effect   │                                                            │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────╯
+═════════════════════════════ Conversation compacted · ctrl+o for history ════════════════════════════
+  ⎿  Read chromatic-blur.js (438 lines)
+  ⎿  Referenced file index.html
+  ⎿  Read README.md (228 lines)
+  ⎿  Read .gitignore (9 lines)
+  ⎿  Read assets/blur1.gif (2.2MB)
+  ⎿  Session limit reached ∙ resets 1am
+     /upgrade to increase your usage limit.
+
+
+
