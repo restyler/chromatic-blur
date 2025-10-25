@@ -208,7 +208,7 @@ blur.destroy();
       </section>
 
       <!-- Key Features -->
-      <section class="card feature-card rounded-2 mb-5">
+      <section class="card feature-card rounded-2 mb-4">
         <div class="card-body p-4 p-md-5">
           <h2 class="h3 fw-bold mb-4" style="font-family: 'Libre Baskerville', Georgia, serif; letter-spacing:-.02em;">Key Features</h2>
           <div class="row g-3">
@@ -225,6 +225,41 @@ blur.destroy();
               <p class="mb-2">📦 Multiple module formats (ES6, CommonJS, AMD, Global)</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      <!-- Technical Implementation -->
+      <section class="card feature-card rounded-2 mb-5">
+        <div class="card-body p-4 p-md-5">
+          <h2 class="h3 fw-bold mb-4" style="font-family: 'Libre Baskerville', Georgia, serif; letter-spacing:-.02em;">How It Works</h2>
+          <p class="lead mb-4">The ChromaticBlur effect uses a sophisticated SVG filter pipeline to create realistic chromatic aberration:</p>
+
+          <h3 class="h5 fw-bold mt-4 mb-3">SVG Filter Pipeline</h3>
+          <ol class="mb-4">
+            <li class="mb-3">
+              <strong><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feTurbulence" target="_blank" rel="nofollow noopener">feTurbulence</a> - Noise Generation</strong><br>
+              <span class="text-muted">Creates organic Perlin noise pattern with low frequency (0.001) for smooth, natural variations. Used as the displacement map source.</span>
+            </li>
+            <li class="mb-3">
+              <strong><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feOffset" target="_blank" rel="nofollow noopener">feOffset</a> + <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feColorMatrix" target="_blank" rel="nofollow noopener">feColorMatrix</a> - RGB Channel Separation</strong><br>
+              <span class="text-muted">Red channel shifts right (+5px), green stays centered, blue shifts left (-5px). Color matrices isolate each channel independently.</span>
+            </li>
+            <li class="mb-3">
+              <strong><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feComposite" target="_blank" rel="nofollow noopener">feComposite</a> - Channel Recombination</strong><br>
+              <span class="text-muted">Arithmetic blending (k2=1, k3=1) additively merges the separated RGB channels back together, creating the characteristic color fringing.</span>
+            </li>
+            <li class="mb-3">
+              <strong><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDisplacementMap" target="_blank" rel="nofollow noopener">feDisplacementMap</a> - Organic Distortion</strong><br>
+              <span class="text-muted">Applies turbulence-based displacement with scale parameter (default 50) for wavy, organic edge distortion.</span>
+            </li>
+            <li class="mb-3">
+              <strong><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feGaussianBlur" target="_blank" rel="nofollow noopener">feGaussianBlur</a> - Final Softening</strong><br>
+              <span class="text-muted">Gaussian blur with stdDeviation=3 creates the characteristic "out of focus" chromatic aberration look.</span>
+            </li>
+          </ol>
+
+          <h3 class="h5 fw-bold mt-4 mb-3">Application Method</h3>
+          <p class="mb-2">The SVG filter is applied via CSS <code>backdrop-filter: url(#filter-id)</code> for modern glassmorphism effects, with fallback to direct filter application for Safari/Firefox compatibility. Additional gradient and noise overlay layers enhance visual depth.</p>
         </div>
       </section>
     </div>
