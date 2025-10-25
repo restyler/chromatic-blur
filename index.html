@@ -48,6 +48,17 @@
 
     /* Footer visibility */
     footer { position: relative; z-index: 10; background-color: #fafafa; }
+
+    /* Section headings - serif for main, sans-serif for sub */
+    .section-heading-serif {
+      font-family: 'Libre Baskerville', Georgia, serif;
+      letter-spacing: -.02em;
+    }
+
+    /* Increase all h3 section headings by 20% */
+    main h3 {
+      font-size: 1.2em;
+    }
   </style>
 </head>
 <body>
@@ -56,7 +67,7 @@
   <!-- Navbar (ChromaticBlur target) -->
   <nav class="navbar cb-navbar navbar-expand-md position-fixed px-3 py-2 rounded-pill">
     <div class="container-fluid px-0">
-      <a class="navbar-brand fw-bold" href="#" style="letter-spacing:-.01em; font-family: 'Libre Baskerville', Georgia, serif;">ChromaticBlur</a>
+      <a class="navbar-brand fw-bold" href="#" style="letter-spacing:-.01em; font-family: 'Libre Baskerville', Georgia, serif;">ChromaticBlur.js</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -86,7 +97,7 @@
         <div class="col-12">
           <div class="card feature-card rounded-2">
             <div class="card-body p-4 p-md-5">
-              <h1 class="display-4 fw-bold" style="font-family: 'Libre Baskerville', Georgia, serif; letter-spacing:-.02em;">ChromaticBlur.js Plugin Demo</h1>
+              <h1 class="display-4 fw-bold section-heading-serif">ChromaticBlur.js Plugin Demo</h1>
               <p class="lead mt-3">This page demonstrates the ChromaticBlur.js plugin — a modern, vanilla JavaScript solution for creating chromatic aberration blur effects (≈2.1 KB gzipped). The navigation bar above uses the plugin with default settings.</p>
               <p class="mb-0">Try scrolling to see how the background texture interacts with the blur effect.</p>
 
@@ -210,7 +221,7 @@ blur.destroy();
       <!-- Key Features -->
       <section class="card feature-card rounded-2 mb-4">
         <div class="card-body p-4 p-md-5">
-          <h2 class="h3 fw-bold mb-4" style="font-family: 'Libre Baskerville', Georgia, serif; letter-spacing:-.02em;">Key Features</h2>
+          <h2 class="h3 fw-bold mb-4">Key Features</h2>
           <div class="row g-3">
             <div class="col-12 col-md-6">
               <p class="mb-2">🎨 Beautiful chromatic aberration with color channel splitting</p>
@@ -229,9 +240,9 @@ blur.destroy();
       </section>
 
       <!-- Technical Implementation -->
-      <section class="card feature-card rounded-2 mb-5">
+      <section class="card feature-card rounded-2 mb-5 technical-section">
         <div class="card-body p-4 p-md-5">
-          <h2 class="h3 fw-bold mb-4" style="font-family: 'Libre Baskerville', Georgia, serif; letter-spacing:-.02em;">How It Works</h2>
+          <h2 class="h3 fw-bold mb-4">How It Works</h2>
           <p class="lead mb-4">The ChromaticBlur effect uses a sophisticated SVG filter pipeline to create realistic chromatic aberration:</p>
 
           <h3 class="h5 fw-bold mt-4 mb-3">SVG Filter Pipeline</h3>
