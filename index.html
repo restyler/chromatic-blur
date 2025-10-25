@@ -1,490 +1,188 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChromaticBlur.js - Chromatic Aberration Effect Plugin</title>
-    <meta name="description" content="A lightweight, zero-dependency JavaScript plugin for creating stunning chromatic aberration blur effects">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ChromaticBlur.js — Bootstrap Demo</title>
+  <meta name="description" content="ChromaticBlur.js demo page built with Bootstrap 5 for robust responsive behavior.">
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Highlight.js -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+  <style>
+    :root { --cb-border: rgba(156,156,156,.2); }
+    body { background: #fafafa; }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background-color: #fafafa;
-            min-height: 300vh;
-            padding: 20px;
-            color: #1a1a1a;
-            line-height: 1.6;
-        }
+    /* Subtle textured background */
+    .background-text { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .background-text { background-color: #fafafa; }
+    .background-text::before { content: ""; position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    }
+    .background-text::after { content: ""; position: absolute; inset: 0; background-image:
+      radial-gradient(circle at 20% 30%, rgba(255,0,100,.03) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(0,100,255,.03) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(0,255,100,.02) 0%, transparent 50%);
+    }
 
-        /* Chromatic aberration inspired background */
-        .background-text {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-            background-color: #fafafa;
-            background-image:
-                radial-gradient(circle at 20% 30%, rgba(255, 0, 100, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(0, 100, 255, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(0, 255, 100, 0.02) 0%, transparent 50%);
-        }
+    /* Fixed navbar sizing and spacing */
+    .cb-navbar { width: 100%; max-width: 700px; margin: 0 auto; left: 0; right: 0; top: 12px; z-index: 1030; }
+    @media (max-width: 575px) { .cb-navbar { max-width: calc(100% - 32px); } }
 
-        .background-text::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
-        }
+    /* Give space for fixed navbar */
+    main { padding-top: 6rem; }
+    @media (max-width: 768px) { main { padding-top: 4.5rem; } }
 
-        .background-text::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image:
-                repeating-linear-gradient(
-                    0deg,
-                    transparent,
-                    transparent 3px,
-                    rgba(255, 0, 100, 0.015) 3px,
-                    rgba(255, 0, 100, 0.015) 4px
-                ),
-                repeating-linear-gradient(
-                    90deg,
-                    transparent,
-                    transparent 3px,
-                    rgba(0, 100, 255, 0.015) 3px,
-                    rgba(0, 100, 255, 0.015) 4px
-                );
-        }
+    /* Optional card polish */
+    .feature-card { border-top: 3px solid #1a1a1a; box-shadow: 0 1px 3px rgba(0,0,0,.05); }
 
-        /* Navigation bar */
-        .navbar {
-            position: fixed;
-            top: 20px;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            gap: 26px;
-            padding: 16px 31px;
-            border-radius: 100px;
-            width: max-content;
-            margin-left: auto;
-            margin-right: auto;
-        }
+    /* Larger buttons for CDN links */
+    .cdn-btn { padding: 0.45rem 1.2rem; }
 
-        /* Responsive adjustments */
-        @media (max-width: 1024px) {
-            .content { padding: 28px; }
-            .section { padding: 32px; }
-            .section h2 { font-size: 42px; }
-            .section h3 { font-size: 22px; }
-        }
-
-        @media (max-width: 768px) {
-            body { padding: 14px; }
-            .navbar {
-                top: 12px;
-                gap: 12px;
-                padding: 10px 14px;
-                width: calc(100% - 24px);
-                margin: 0 auto;
-                border-radius: 16px;
-                justify-content: space-between;
-                flex-wrap: wrap;
-                box-sizing: border-box;
-            }
-            .logo { font-size: 20px; }
-            .nav-buttons { gap: 8px; flex-wrap: wrap; }
-            .nav-toggle { display: inline-flex; align-items: center; justify-content: center; }
-            .btn { padding: 8px 12px; font-size: 14px; }
-
-            .content { margin: 88px auto 0; padding: 18px; }
-            .section { padding: 20px; }
-            .section h2 { font-size: 32px; margin-bottom: 18px; }
-            .section h3 { font-size: 20px; }
-            .section p { font-size: 15px; }
-
-            .controls { padding: 20px; }
-            .demo-grid { grid-template-columns: 1fr; gap: 16px; }
-            .demo-card { padding: 20px; }
-        }
-
-        @media (max-width: 420px) {
-            .navbar { padding: 9px 12px; gap: 10px; overflow: visible !important; }
-            .logo { font-size: 18px; }
-            .btn { padding: 8px 10px; font-size: 13px; }
-            .content { margin-top: 76px; }
-            .nav-buttons { display: none; flex-basis: 100%; margin-top: 8px; }
-            .navbar.nav-open .nav-buttons { display: flex; }
-            .section h2 { font-size: 28px; }
-        }
-
-        .logo {
-            font-family: 'Libre Baskerville', Georgia, serif;
-            font-size: 26px;
-            font-weight: 700;
-            color: #1f1f1f;
-            text-decoration: none;
-            position: relative;
-            z-index: 2;
-            letter-spacing: -0.01em;
-        }
-
-        .nav-buttons {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            position: relative;
-            z-index: 2;
-        }
-        .nav-toggle {
-            display: none;
-            background: #1f1f1f;
-            color: white;
-            border: none;
-            border-radius: 999px;
-            padding: 8px 12px;
-            font-size: 14px;
-            line-height: 1;
-            cursor: pointer;
-        }
-
-        .btn {
-            padding: 10px 24px;
-            border-radius: 100px;
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 500;
-            font-family: 'Inter', sans-serif;
-            transition: transform 0.2s;
-            cursor: pointer;
-            letter-spacing: -0.01em;
-        }
-
-        .btn:hover {
-            transform: scale(1.05);
-        }
-
-        .btn-primary {
-            background-color: white;
-            color: #1f1f1f;
-            border: 1px solid rgb(219, 219, 219);
-            box-shadow: rgba(255, 255, 255, 0.05) 0px 30px 24px 0px inset;
-        }
-
-        .btn-secondary {
-            background-color: #1f1f1f;
-            color: white;
-            border: none;
-        }
-
-        /* Content sections */
-        .content {
-            max-width: 1200px;
-            margin: 120px auto 0;
-            padding: 40px;
-            position: relative;
-            z-index: 10;
-        }
-
-        .section {
-            margin-bottom: 60px;
-            background: white;
-            padding: 50px;
-            border-radius: 2px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            border-top: 3px solid #1a1a1a;
-            border-bottom: 1px solid #e5e5e5;
-        }
-
-        .section h2 {
-            font-family: 'Libre Baskerville', Georgia, serif;
-            font-size: 54px;
-            font-weight: 700;
-            margin-bottom: 28px;
-            color: #1a1a1a;
-            letter-spacing: -0.02em;
-            line-height: 1.05;
-        }
-
-        .section h3 {
-            font-family: 'Libre Baskerville', Georgia, serif;
-            font-size: 27px;
-            font-weight: 700;
-            margin-bottom: 18px;
-            color: #1a1a1a;
-            letter-spacing: -0.015em;
-            line-height: 1.2;
-        }
-
-        .section p {
-            font-size: 17px;
-            line-height: 1.7;
-            color: #444;
-            margin-bottom: 16px;
-            font-weight: 400;
-        }
-
-        /* Control panel */
-        .controls {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            border: 1px solid #e5e5e5;
-            margin-bottom: 40px;
-        }
-
-        .controls h3 {
-            font-family: 'Libre Baskerville', Georgia, serif;
-            margin-bottom: 24px;
-            font-size: 32px;
-            font-weight: 700;
-            letter-spacing: -0.015em;
-            color: #1a1a1a;
-            line-height: 1.2;
-        }
-
-        .control-group {
-            margin-bottom: 20px;
-        }
-
-        .control-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #1a1a1a;
-            font-size: 15px;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .control-group input[type="range"] {
-            width: 100%;
-            margin-right: 10px;
-        }
-
-        .control-group .value-display {
-            display: inline-block;
-            min-width: 50px;
-            text-align: right;
-            font-family: monospace;
-            color: #666;
-        }
-
-        .control-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .control-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            background: #1f1f1f;
-            color: white;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background 0.2s;
-        }
-
-        .control-btn:hover {
-            background: #333;
-        }
-
-        .control-btn.secondary {
-            background: #e0e0e0;
-            color: #1f1f1f;
-        }
-
-        .control-btn.secondary:hover {
-            background: #d0d0d0;
-        }
-
-        /* Demo cards */
-        .demo-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 30px;
-        }
-
-        .demo-card {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .demo-card h4 {
-            font-family: 'Libre Baskerville', Georgia, serif;
-            font-size: 21px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            letter-spacing: -0.015em;
-            color: #1a1a1a;
-            line-height: 1.2;
-        }
-
-        .demo-card p {
-            font-size: 15px;
-            color: #666;
-            font-family: 'Inter', sans-serif;
-        }
-    </style>
+    /* Enhanced hamburger menu */
+    .navbar-toggler { border: none; padding: 0.5rem; }
+    .navbar-toggler:focus { box-shadow: none; }
+    .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 0.85%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='3' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+  </style>
 </head>
 <body>
-    <!-- Subtle noise texture background -->
-    <div class="background-text"></div>
+  <div class="background-text" aria-hidden="true"></div>
 
-    <!-- Navigation with ChromaticBlur -->
-    <nav class="navbar">
-        <a href="https://github.com/restyler/chromatic-blur" class="logo">ChromaticBlur</a>
-        <button class="nav-toggle" aria-label="Menu" aria-expanded="false">☰</button>
-        <div class="nav-buttons">
-            <a href="https://github.com/restyler/chromatic-blur#readme" class="btn btn-primary">Documentation</a>
-            <a href="https://github.com/restyler/chromatic-blur" class="btn btn-secondary">GitHub</a>
+  <!-- Navbar (ChromaticBlur target) -->
+  <nav class="navbar cb-navbar navbar-expand-md position-fixed px-3 py-2 rounded-pill">
+    <div class="container-fluid px-0">
+      <a class="navbar-brand fw-bold" href="#" style="letter-spacing:-.01em; font-family: 'Libre Baskerville', Georgia, serif;">ChromaticBlur</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navMain">
+        <ul class="navbar-nav mb-2 mb-md-0 gap-2 align-items-center">
+          <li class="nav-item">
+            <a class="btn btn-light border rounded-pill d-inline-flex align-items-center" href="https://github.com/restyler/chromatic-blur#readme" target="_blank" rel="noopener">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="me-2"><path d="M6 4h9a3 3 0 0 1 3 3v11.5a.5.5 0 0 1-.8.4L15 17H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm0 2v9h8.5l1.5 1.1V7a1 1 0 0 0-1-1H6zm2 2h6v2H8V8zm0 3h6v2H8v-2z"/></svg>
+              <span>Documentation</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-dark rounded-pill d-inline-flex align-items-center" href="https://github.com/restyler/chromatic-blur" target="_blank" rel="noopener">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="me-2"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.3-1.1-1.7-1.1-1.7-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.6 2.5 1.1 3.1.8.1-.6.4-1.1.7-1.3-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.4 1.2-3.3-.1-.3-.5-1.6.1-3.2 0 0 1-.3 3.4 1.2a11.7 11.7 0 0 1 6.2 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.9.1 3.2.8.9 1.2 2 1.2 3.3 0 4.5-2.7 5.5-5.3 5.8.4.3.8 1 .8 2v3c0 .3.2.7.8.6A12 12 0 0 0 12 .5z"/></svg>
+              <span>GitHub</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="position-relative z-1">
+    <div class="container">
+      <!-- Hero / Intro -->
+      <section class="row g-4 mb-4">
+        <div class="col-12">
+          <div class="card feature-card rounded-2">
+            <div class="card-body p-4 p-md-5">
+              <h1 class="display-4 fw-bold" style="font-family: 'Libre Baskerville', Georgia, serif; letter-spacing:-.02em;">ChromaticBlur.js Plugin Demo</h1>
+              <p class="lead mt-3">This page demonstrates the ChromaticBlur.js plugin — a modern, vanilla JavaScript solution for creating chromatic aberration blur effects (≈2.1 KB gzipped). The navigation bar above uses the plugin with default settings.</p>
+              <p class="mb-0">Try scrolling to see how the background texture interacts with the blur effect.</p>
+
+              <!-- Embedded quick links -->
+              <div class="d-flex gap-2 mt-4 flex-wrap">
+                <a class="btn btn-sm btn-dark rounded-pill cdn-btn" href="https://unpkg.com/chromatic-blur@latest/dist/chromatic-blur.min.js" target="_blank" rel="noopener">📦 unpkg</a>
+                <a class="btn btn-sm btn-dark rounded-pill cdn-btn" href="https://cdn.jsdelivr.net/npm/chromatic-blur@latest/dist/chromatic-blur.min.js" target="_blank" rel="noopener">🚀 jsDelivr</a>
+                <a class="btn btn-sm btn-outline-dark rounded-pill cdn-btn" href="https://www.npmjs.com/package/chromatic-blur" target="_blank" rel="noopener">npm</a>
+              </div>
+            </div>
+          </div>
         </div>
-    </nav>
+      </section>
 
-    <!-- Main Content -->
-    <div class="content">
-        <div class="section">
-            <h2>ChromaticBlur.js Plugin Demo</h2>
-            <p>
-                This page demonstrates the ChromaticBlur.js plugin - a modern, vanilla JavaScript
-                solution for creating chromatic aberration effects (2.1 KB gzipped). The navigation bar above uses
-                the plugin with default settings.
-            </p>
-            <p>
-                Try scrolling to see how the background texture interacts with the blur effect!
-            </p>
-
-            <!-- Quick Links -->
-            <div style="margin-top: 30px; padding: 30px; background: #f8f8f8; border-radius: 2px; border-left: 3px solid #1a1a1a;">
-                <h3 style="font-family: 'Libre Baskerville', Georgia, serif; margin-bottom: 20px; font-size: 24px; font-weight: 700; letter-spacing: -0.015em; color: #1a1a1a; line-height: 1.2;">Quick Links</h3>
-                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                    <a href="https://unpkg.com/chromatic-blur@latest/dist/chromatic-blur.min.js"
-                       target="_blank"
-                       style="padding: 10px 20px; background: #1a1a1a; color: white; text-decoration: none; border-radius: 2px; font-size: 14px; font-family: 'Inter', sans-serif; font-weight: 500; display: inline-block; transition: background 0.2s;">
-                        📦 unpkg CDN
-                    </a>
-                    <a href="https://cdn.jsdelivr.net/npm/chromatic-blur@latest/dist/chromatic-blur.min.js"
-                       target="_blank"
-                       style="padding: 10px 20px; background: #1a1a1a; color: white; text-decoration: none; border-radius: 2px; font-size: 14px; font-family: 'Inter', sans-serif; font-weight: 500; display: inline-block; transition: background 0.2s;">
-                        🚀 jsDelivr CDN
-                    </a>
-                    <a href="https://www.npmjs.com/package/chromatic-blur"
-                       target="_blank"
-                       style="padding: 10px 20px; background: #1a1a1a; color: white; text-decoration: none; border-radius: 2px; font-size: 14px; font-family: 'Inter', sans-serif; font-weight: 500; display: inline-block; transition: background 0.2s;">
-                        📦 npm Package
-                    </a>
-                    <a href="https://github.com/restyler/chromatic-blur"
-                       target="_blank"
-                       style="padding: 10px 20px; background: white; color: #1a1a1a; text-decoration: none; border-radius: 2px; font-size: 14px; font-family: 'Inter', sans-serif; font-weight: 500; display: inline-block; border: 2px solid #1a1a1a; transition: background 0.2s;">
-                        ⭐ GitHub Repo
-                    </a>
-                </div>
+      <!-- Live Controls -->
+      <section class="card rounded-2 mb-4">
+        <div class="card-body p-4">
+          <h3 class="h4 fw-bold mb-3">Live Controls</h3>
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label">Red Offset: <span id="redValue" class="badge text-bg-secondary">5</span> px</label>
+              <input type="range" id="redOffset" class="form-range" min="-20" max="20" value="5" step="1">
             </div>
+            <div class="col-12">
+              <label class="form-label">Blue Offset: <span id="blueValue" class="badge text-bg-secondary">-5</span> px</label>
+              <input type="range" id="blueOffset" class="form-range" min="-20" max="20" value="-5" step="1">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Blur Amount: <span id="blurValue" class="badge text-bg-secondary">3</span></label>
+              <input type="range" id="blurAmount" class="form-range" min="0" max="10" value="3" step="0.5">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Displacement Scale: <span id="displacementValue" class="badge text-bg-secondary">50</span></label>
+              <input type="range" id="displacementScale" class="form-range" min="0" max="150" value="50" step="5">
+            </div>
+          </div>
+          <div class="d-flex flex-wrap gap-2 mt-3">
+            <button class="btn btn-dark" id="resetBtn">Reset to Defaults</button>
+            <button class="btn btn-outline-secondary" id="toggleBtn">Disable Effect</button>
+            <button class="btn btn-outline-secondary" id="intenseBtn">Intense Mode</button>
+          </div>
         </div>
+      </section>
 
-        <!-- Interactive Controls -->
-        <div class="controls">
-            <h3>Live Controls</h3>
-            <p style="margin-bottom: 20px; color: #666;">
-                Adjust the settings below to see real-time changes to the navigation bar effect.
-            </p>
-
-            <div class="control-group">
-                <label>
-                    Red Offset: <span class="value-display" id="redValue">5</span>px
-                </label>
-                <input type="range" id="redOffset" min="-20" max="20" value="5" step="1">
+      <!-- Demo Cards -->
+      <section class="mb-4">
+        <div class="row g-3">
+          <div class="col-12 col-md-4">
+            <div class="card h-100 rounded-3 demo-card card-1">
+              <div class="card-body">
+                <h4 class="h5 fw-bold text-center">Subtle Effect</h4>
+                <p class="text-muted small text-center">Low offset, minimal blur</p>
+<pre class="bg-light rounded p-3 border small mb-0"><code class="language-javascript">const subtle = new ChromaticBlur('.card-1', {
+  redOffset: 2,
+  blueOffset: -2,
+  blurAmount: 2
+});</code></pre>
+              </div>
             </div>
-
-            <div class="control-group">
-                <label>
-                    Blue Offset: <span class="value-display" id="blueValue">-5</span>px
-                </label>
-                <input type="range" id="blueOffset" min="-20" max="20" value="-5" step="1">
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="card h-100 rounded-3 demo-card card-2">
+              <div class="card-body">
+                <h4 class="h5 fw-bold text-center">Medium Effect</h4>
+                <p class="text-muted small text-center">Balanced settings</p>
+<pre class="bg-light rounded p-3 border small mb-0"><code class="language-javascript">const medium = new ChromaticBlur('.card-2', {
+  redOffset: 5,
+  blueOffset: -5,
+  blurAmount: 4
+});</code></pre>
+              </div>
             </div>
-
-            <div class="control-group">
-                <label>
-                    Blur Amount: <span class="value-display" id="blurValue">3</span>
-                </label>
-                <input type="range" id="blurAmount" min="0" max="10" value="3" step="0.5">
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="card h-100 rounded-3 demo-card card-3">
+              <div class="card-body">
+                <h4 class="h5 fw-bold text-center">Intense Effect</h4>
+                <p class="text-muted small text-center">High offset, maximum blur</p>
+<pre class="bg-light rounded p-3 border small mb-0"><code class="language-javascript">const intense = new ChromaticBlur('.card-3', {
+  redOffset: 12,
+  blueOffset: -12,
+  blurAmount: 8,
+  displacementScale: 100
+});</code></pre>
+              </div>
             </div>
-
-            <div class="control-group">
-                <label>
-                    Displacement Scale: <span class="value-display" id="displacementValue">50</span>
-                </label>
-                <input type="range" id="displacementScale" min="0" max="150" value="50" step="5">
-            </div>
-
-            <div class="control-buttons">
-                <button class="control-btn" id="resetBtn">Reset to Defaults</button>
-                <button class="control-btn secondary" id="toggleBtn">Disable Effect</button>
-                <button class="control-btn secondary" id="intenseBtn">Intense Mode</button>
-            </div>
+          </div>
         </div>
+      </section>
 
-        <!-- Multiple Demo Cards -->
-        <div class="section">
-            <h2>Multiple Instances</h2>
-            <p>
-                The plugin can be applied to multiple elements simultaneously, each with different settings.
-            </p>
-
-            <div class="demo-grid">
-                <div class="demo-card card-1">
-                    <h4>Subtle Effect</h4>
-                    <p>Low offset, minimal blur</p>
-                </div>
-
-                <div class="demo-card card-2">
-                    <h4>Medium Effect</h4>
-                    <p>Balanced settings</p>
-                </div>
-
-                <div class="demo-card card-3">
-                    <h4>Intense Effect</h4>
-                    <p>High offset, maximum blur</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Usage Example -->
-        <div class="section">
-            <h2>Usage Example</h2>
-            <pre style="background: #f6f8fa; padding: 20px; border-radius: 6px; overflow-x: auto; border: 1px solid #e1e4e8;"><code class="language-javascript">// Initialize with default settings
+      <!-- Usage Example -->
+      <section class="card rounded-2 mb-4">
+        <div class="card-body p-4">
+          <h3 class="h4 fw-bold mb-3">Usage Example</h3>
+<pre class="bg-light rounded p-3 border small"><code class="language-javascript">// Initialize with default settings
 const blur = new ChromaticBlur('.navbar');
 
 // Or with custom options
-const blur = new ChromaticBlur('.navbar', {
+const blur2 = new ChromaticBlur('.navbar', {
   redOffset: 8,
   blueOffset: -8,
   blurAmount: 5,
@@ -494,190 +192,82 @@ const blur = new ChromaticBlur('.navbar', {
 // Update dynamically
 blur.update({ redOffset: 10 });
 
-// Method chaining
-blur.disable().update({ blurAmount: 2 }).enable();
-
 // Cleanup
-blur.destroy();</code></pre>
+blur.destroy();
+</code></pre>
         </div>
+      </section>
 
-        <!-- Features -->
-        <div class="section">
-            <h2>Key Features</h2>
-            <p>🎨 Beautiful chromatic aberration with color channel splitting</p>
-            <p>🪶 Zero dependencies - pure vanilla JavaScript</p>
-            <p>⚡ Lightweight and performant</p>
-            <p>🔧 Highly configurable with sensible defaults</p>
-            <p>🔗 Method chaining support</p>
-            <p>🧹 Automatic cleanup and memory management</p>
-            <p>♿ Accessible (screen reader friendly)</p>
-            <p>📦 Multiple module formats (ES6, CommonJS, AMD, Global)</p>
+      <!-- Key Features -->
+      <section class="card feature-card rounded-2 mb-5">
+        <div class="card-body p-4 p-md-5">
+          <h2 class="h3 fw-bold mb-4" style="font-family: 'Libre Baskerville', Georgia, serif; letter-spacing:-.02em;">Key Features</h2>
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
+              <p class="mb-2">🎨 Beautiful chromatic aberration with color channel splitting</p>
+              <p class="mb-2">🪶 Zero dependencies - pure vanilla JavaScript</p>
+              <p class="mb-2">⚡ Lightweight and performant</p>
+              <p class="mb-2">🔧 Highly configurable with sensible defaults</p>
+            </div>
+            <div class="col-12 col-md-6">
+              <p class="mb-2">🔗 Method chaining support</p>
+              <p class="mb-2">🧹 Automatic cleanup and memory management</p>
+              <p class="mb-2">♿ Accessible (screen reader friendly)</p>
+              <p class="mb-2">📦 Multiple module formats (ES6, CommonJS, AMD, Global)</p>
+            </div>
+          </div>
         </div>
-
-        <div class="section">
-            <h2>Modern Best Practices</h2>
-            <p>
-                This plugin demonstrates modern JavaScript development practices:
-            </p>
-            <p>✅ ES6+ class-based architecture for clean OOP design</p>
-            <p>✅ No external dependencies - pure vanilla JS</p>
-            <p>✅ Declarative API with intuitive method names</p>
-            <p>✅ Fluent interface with method chaining</p>
-            <p>✅ Proper memory management and cleanup</p>
-            <p>✅ TypeScript-friendly with comprehensive JSDoc comments</p>
-            <p>✅ Performance optimized - reuses SVG filters, minimal DOM manipulation</p>
-            <p>✅ Defensive programming with error handling and validation</p>
-        </div>
+      </section>
     </div>
+  </main>
 
-    <!-- Highlight.js for syntax highlighting -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <script>hljs.highlightAll();</script>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Highlight.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <!-- Plugin -->
+  <script type="module">
+    import ChromaticBlur from './dist/chromatic-blur.js?v=1.0.8';
 
-    <!-- Import the plugin -->
-    <script type="module">
-        import ChromaticBlur from './dist/chromatic-blur.js?v=1.0.8';
+    // Initialize navbar effect
+    const navBlur = new ChromaticBlur('.navbar');
 
-        // Initialize navbar effect
-        const navBlur = new ChromaticBlur('.navbar');
+    // Initialize demo cards with different settings
+    const card1 = new ChromaticBlur('.card-1', { redOffset: 2, blueOffset: -2, blurAmount: 2 });
+    const card2 = new ChromaticBlur('.card-2', { redOffset: 5, blueOffset: -5, blurAmount: 4 });
+    const card3 = new ChromaticBlur('.card-3', { redOffset: 12, blueOffset: -12, blurAmount: 8, displacementScale: 100 });
 
-        // Mobile nav toggle
-        const navEl = document.querySelector('.navbar');
-        const navToggle = document.querySelector('.nav-toggle');
-        const navButtons = document.querySelector('.nav-buttons');
-        if (navToggle && navEl) {
-            navToggle.addEventListener('click', () => {
-                const open = navEl.classList.toggle('nav-open');
-                navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-            });
-        }
-        if (navButtons && navEl) {
-            navButtons.querySelectorAll('a').forEach((a) => {
-                a.addEventListener('click', () => {
-                    navEl.classList.remove('nav-open');
-                    if (navToggle) navToggle.setAttribute('aria-expanded', 'false');
-                });
-            });
-        }
+    // Controls
+    let isEnabled = true;
+    const byId = (id) => document.getElementById(id);
+    byId('redOffset').addEventListener('input', (e) => { const v = parseFloat(e.target.value); byId('redValue').textContent = v; navBlur.update({ redOffset: v }); });
+    byId('blueOffset').addEventListener('input', (e) => { const v = parseFloat(e.target.value); byId('blueValue').textContent = v; navBlur.update({ blueOffset: v }); });
+    byId('blurAmount').addEventListener('input', (e) => { const v = parseFloat(e.target.value); byId('blurValue').textContent = v; navBlur.update({ blurAmount: v }); });
+    byId('displacementScale').addEventListener('input', (e) => { const v = parseFloat(e.target.value); byId('displacementValue').textContent = v; navBlur.update({ displacementScale: v }); });
 
-        // Initialize demo cards with different settings
-        const card1 = new ChromaticBlur('.card-1', {
-            redOffset: 2,
-            blueOffset: -2,
-            blurAmount: 2
-        });
+    byId('resetBtn').addEventListener('click', () => {
+      byId('redOffset').value = 5; byId('blueOffset').value = -5; byId('blurAmount').value = 3; byId('displacementScale').value = 50;
+      byId('redValue').textContent = 5; byId('blueValue').textContent = -5; byId('blurValue').textContent = 3; byId('displacementValue').textContent = 50;
+      navBlur.update({ redOffset: 5, blueOffset: -5, blurAmount: 3, displacementScale: 50 });
+      if (!isEnabled) { navBlur.enable(); isEnabled = true; byId('toggleBtn').textContent = 'Disable Effect'; }
+    });
 
-        const card2 = new ChromaticBlur('.card-2', {
-            redOffset: 5,
-            blueOffset: -5,
-            blurAmount: 4
-        });
+    byId('toggleBtn').addEventListener('click', (e) => {
+      if (isEnabled) { navBlur.disable(); e.target.textContent = 'Enable Effect'; }
+      else { navBlur.enable(); e.target.textContent = 'Disable Effect'; }
+      isEnabled = !isEnabled;
+    });
 
-        const card3 = new ChromaticBlur('.card-3', {
-            redOffset: 12,
-            blueOffset: -12,
-            blurAmount: 8,
-            displacementScale: 100
-        });
+    byId('intenseBtn').addEventListener('click', () => {
+      byId('redOffset').value = 15; byId('blueOffset').value = -15; byId('blurAmount').value = 8; byId('displacementScale').value = 100;
+      byId('redValue').textContent = 15; byId('blueValue').textContent = -15; byId('blurValue').textContent = 8; byId('displacementValue').textContent = 100;
+      navBlur.update({ redOffset: 15, blueOffset: -15, blurAmount: 8, displacementScale: 100 });
+      if (!isEnabled) { navBlur.enable(); isEnabled = true; byId('toggleBtn').textContent = 'Disable Effect'; }
+    });
 
-        // Interactive controls
-        let isEnabled = true;
-
-        // Update red offset
-        document.getElementById('redOffset').addEventListener('input', (e) => {
-            const value = parseFloat(e.target.value);
-            document.getElementById('redValue').textContent = value;
-            navBlur.update({ redOffset: value });
-        });
-
-        // Update blue offset
-        document.getElementById('blueOffset').addEventListener('input', (e) => {
-            const value = parseFloat(e.target.value);
-            document.getElementById('blueValue').textContent = value;
-            navBlur.update({ blueOffset: value });
-        });
-
-        // Update blur amount
-        document.getElementById('blurAmount').addEventListener('input', (e) => {
-            const value = parseFloat(e.target.value);
-            document.getElementById('blurValue').textContent = value;
-            navBlur.update({ blurAmount: value });
-        });
-
-        // Update displacement scale
-        document.getElementById('displacementScale').addEventListener('input', (e) => {
-            const value = parseFloat(e.target.value);
-            document.getElementById('displacementValue').textContent = value;
-            navBlur.update({ displacementScale: value });
-        });
-
-        // Reset button
-        document.getElementById('resetBtn').addEventListener('click', () => {
-            document.getElementById('redOffset').value = 5;
-            document.getElementById('blueOffset').value = -5;
-            document.getElementById('blurAmount').value = 3;
-            document.getElementById('displacementScale').value = 50;
-
-            document.getElementById('redValue').textContent = 5;
-            document.getElementById('blueValue').textContent = -5;
-            document.getElementById('blurValue').textContent = 3;
-            document.getElementById('displacementValue').textContent = 50;
-
-            navBlur.update({
-                redOffset: 5,
-                blueOffset: -5,
-                blurAmount: 3,
-                displacementScale: 50
-            });
-
-            if (!isEnabled) {
-                navBlur.enable();
-                isEnabled = true;
-                document.getElementById('toggleBtn').textContent = 'Disable Effect';
-            }
-        });
-
-        // Toggle button
-        document.getElementById('toggleBtn').addEventListener('click', (e) => {
-            if (isEnabled) {
-                navBlur.disable();
-                e.target.textContent = 'Enable Effect';
-            } else {
-                navBlur.enable();
-                e.target.textContent = 'Disable Effect';
-            }
-            isEnabled = !isEnabled;
-        });
-
-        // Intense mode button
-        document.getElementById('intenseBtn').addEventListener('click', () => {
-            document.getElementById('redOffset').value = 15;
-            document.getElementById('blueOffset').value = -15;
-            document.getElementById('blurAmount').value = 8;
-            document.getElementById('displacementScale').value = 100;
-
-            document.getElementById('redValue').textContent = 15;
-            document.getElementById('blueValue').textContent = -15;
-            document.getElementById('blurValue').textContent = 8;
-            document.getElementById('displacementValue').textContent = 100;
-
-            navBlur.update({
-                redOffset: 15,
-                blueOffset: -15,
-                blurAmount: 8,
-                displacementScale: 100
-            });
-
-            if (!isEnabled) {
-                navBlur.enable();
-                isEnabled = true;
-                document.getElementById('toggleBtn').textContent = 'Disable Effect';
-            }
-        });
-
-        // Expose to window for debugging
-        window.navBlur = navBlur;
-        window.ChromaticBlur = ChromaticBlur;
-    </script>
+    // Debug exposure
+    window.navBlur = navBlur; window.ChromaticBlur = ChromaticBlur;
+  </script>
 </body>
 </html>
